@@ -10,19 +10,78 @@ import {
     IndexRoute
 } from 'react-router'
 
+const batmanQuery = {
+    pathname: '/search',
+    query: {
+        s: 'Batman'
+    }
+}
+
+const avengerQuery = {
+    pathname: '/search',
+    query: {
+        s: 'Avengers'
+    }
+}
+
+const drStrangeQuery = {
+    pathname: '/search',
+    query: {
+        s: 'Doctor Strange'
+    }
+}
+
+class MovieDetail extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            movie: {
+                Title: 'Unknown'
+            }
+        }
+        if (props.location.query.id) {
+            const id = props.location.query.id
+            axios.get(`http://www.omdbapi.com/?i=${id}&plot=short&r=json`)
+                .then(response => {
+                    const movie = response.data
+                    this.setState({
+                        movie: movie
+                    })            
+                })
+        }
+    }
+
+    render() {
+        const movie = this.state.movie
+        return (
+            <section>
+                <h1>{movie.Title}</h1>
+                <small>{movie.Genre}</small>
+                <div>
+                    <img src={movie.Poster}/>
+                </div>
+            </section>      
+        )
+    }
+} 
 const Home = () => (
     <section>
       
         <h1> This is home </h1>
+        <ul>
+            <li><Link to={batmanQuery}>Batman</Link></li>
+            <li><Link to={avengerQuery}>Avengers</Link></li>
+            <li><Link to={drStrangeQuery}>Doctor Strange</Link></li>
+        </ul>
     </section>
 )
 
-const Detail = () => (
-    <section>
+// const Detail = () => (
+//     <section>
       
-        <h1> This is detail </h1>
-    </section>
-)
+//         <h1> This is detail </h1>
+//     </section>
+// )
 
 const Nav = () => (
     <nav>
@@ -34,15 +93,26 @@ const Nav = () => (
     </nav>
 )
 
+
 const MovieList = (props) => (
     <ul>
     {props.movies.map((movie, i) => {
+        const query = {
+            pathname: '/detail',
+            query: {
+                id: movie.imdbID
+            }
+        }
         return (
-            <li key={i}>{movie.Title}</li>
+            <li key={i}>
+                <h4><Link to={query}>{movie.Title}</Link></h4>
+            </li>
         )
     })}
     </ul>
 )
+
+
 
 class Search extends React.Component {
     constructor(props) {
@@ -50,6 +120,10 @@ class Search extends React.Component {
         this.state = {
             movies: []
         }
+        if (props.location.query.s){
+            this.onSearch(props.location.query.s)
+        }
+        
     }
     onSearch(query) {
         axios.get(`http://www.omdbapi.com/?s=${query}&plot=short&r=json`)
@@ -85,7 +159,7 @@ class Main extends React.Component{
                 <Route path="/" component={App} >
                     <IndexRoute component={Home} />
                     <Route path="search" component={Search} />
-                    <Route path="detail" component={Detail} />
+                    <Route path="detail" component={MovieDetail} />
                 </Route>
             </Router>
         )
