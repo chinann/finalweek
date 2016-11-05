@@ -1,0 +1,16 @@
+body{
+    color: blue;
+}
+
+ul.list > li{
+    color: red;
+}
+
+ul.list > li a{
+    font-weight: bold;
+}
+
+ul.list > li a.thin{
+    font-weight: normal;
+}
+
