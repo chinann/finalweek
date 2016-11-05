@@ -4,8 +4,9 @@
   "description": "Front techs course prototype",
   "main": "index.js",
   "scripts": {
-    "build": "./node_modules/.bin/webpack --display-error-details",
-    "start": "./node_modules/.bin/webpack-dev-server --content-base dist"
+    "copy": "copy src\\index.html dist",
+    "build": "npm run copy & webpack --display-error-details",
+    "start": "webpack-dev-server --content-base dist"
   },
   "author": "",
   "license": "ISC",
